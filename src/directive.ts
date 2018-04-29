@@ -35,8 +35,8 @@ export class SlideDirective implements OnChanges {
     const oldScrollHeight = this.scrollHeight;
     this.htmlElement.style.height = 'auto';
     this.scrollHeight = this.htmlElement.scrollHeight;
-    const duration = (this.scrollHeight - oldScrollHeight) / this.speed + 'ms';
-    this.htmlElement.style.transition = `height ${duration} ${this.transitionTimingFunction}`;
+    const duration = (this.scrollHeight - oldScrollHeight) / this.speed;
+    this.htmlElement.style.transition = `height ${duration + 'ms'} ${this.transitionTimingFunction}`;
     this.htmlElement.style.height = oldScrollHeight + 'px';
     setTimeout(() => {
       this.htmlElement.style.height = this.scrollHeight + 'px';
