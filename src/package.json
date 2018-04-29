@@ -1,0 +1,25 @@
+{
+  "name": "@yca/slide",
+  "version": "1.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yc-angular/slide.git"
+  },
+  "author": {
+    "name": "Yu Chen",
+    "email": "yu.chen@live.ie"
+  },
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yc-angular/slide.git/issues"
+  },
+  "main": "slide.umd.js",
+  "module": "slide.js",
+  "jsnext:main": "slide.js",
+  "typings": "slide.d.ts",
+  "peerDependencies": {
+  }
+}
