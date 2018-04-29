@@ -40,6 +40,9 @@ export class SlideDirective implements OnChanges {
     this.htmlElement.style.height = oldScrollHeight + 'px';
     setTimeout(() => {
       this.htmlElement.style.height = this.scrollHeight + 'px';
+      setTimeout(() => {
+        this.htmlElement.style.height = 'auto';
+      }, duration);
     });
   }
 
