@@ -1,11 +1,11 @@
 import { Directive, ElementRef, Input, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
 
 @Directive({
-  selector: '[ycaSlide]'
+  selector: '[ycaSlide]',
+  exportAs: 'ycaSlide',
 })
 export class SlideDirective implements OnChanges {
   @Input() ycaSlide: boolean;
-  @Input() firstAnimate: boolean = false;
   @Input() transitionTimingFunction: string = 'ease-in-out';
   @Input() speed: number = 1;
   htmlElement: HTMLElement;
@@ -14,40 +14,43 @@ export class SlideDirective implements OnChanges {
   constructor(private el: ElementRef) {
     this.htmlElement = this.el.nativeElement;
     this.htmlElement.style.overflow = 'hidden';
-    this.htmlElement.style.height = '0px';
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    this.htmlElement.style.height = 'auto';
-    this.scrollHeight = this.htmlElement.scrollHeight;
-    this.htmlElement.style.transition = this.generateTransition(changes);
-    if (changes.ycaSlide.currentValue) {
-      this.slideDown(changes);
+    if (!this.ycaSlide) {
+      this.htmlElement.style.height = '0px';
+      this.scrollHeight = 0;
     } else {
-      this.slideUp(changes);
+      this.htmlElement.style.height = 'auto';
+      this.scrollHeight = this.htmlElement.scrollHeight;
     }
   }
 
-  slideDown(changes: SimpleChanges) {
-    this.htmlElement.style.height = '0px';
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.ycaSlide.currentValue) {
+      this.slideDown();
+    } else {
+      this.slideUp();
+    }
+  }
+
+  slideDown() {
+    const oldScrollHeight = this.scrollHeight;
+    this.htmlElement.style.height = 'auto';
+    this.scrollHeight = this.htmlElement.scrollHeight;
+    const duration = (this.scrollHeight - oldScrollHeight) / this.speed + 'ms';
+    this.htmlElement.style.transition = `height ${duration} ${this.transitionTimingFunction}`;
+    this.htmlElement.style.height = oldScrollHeight + 'px';
     setTimeout(() => {
       this.htmlElement.style.height = this.scrollHeight + 'px';
     });
   }
 
-  slideUp(changes: SimpleChanges) {
-    this.htmlElement.style.height = this.scrollHeight + 'px';
+  slideUp() {
+    const oldScrollHeight = this.scrollHeight;
+    this.scrollHeight = 0;
+    this.htmlElement.style.height = oldScrollHeight + 'px';
+    const duration = oldScrollHeight / this.speed + 'ms';
+    this.htmlElement.style.transition = `height ${duration} ${this.transitionTimingFunction}`;
     setTimeout(() => {
       this.htmlElement.style.height = '0px';
     });
   }
-
-  generateTransition(changes: SimpleChanges) {
-    if (changes.ycaSlide.firstChange && !this.firstAnimate) {
-      return '';
-    }
-    const duration = this.scrollHeight / this.speed + 'ms';
-    return `height ${duration} ${this.transitionTimingFunction}`;
-  }
-
 }
