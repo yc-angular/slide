@@ -62,7 +62,6 @@ Once your library is imported, you can use its components, directives and pipes 
 ## Inputs
 ```ts
 @Input() ycaSlide: boolean;
-@Input() firstAnimate: boolean = false;
 @Input() transitionTimingFunction: string = 'ease-in-out';
 @Input() speed: number = 1; // px per ms
 ```
