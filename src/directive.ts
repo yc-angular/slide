@@ -8,22 +8,40 @@ export class SlideDirective implements OnChanges {
   @Input() ycaSlide: boolean;
   @Input() transitionTimingFunction: string = 'ease-in-out';
   @Input() speed: number = 1;
+  @Input() wait: number = 0;
   htmlElement: HTMLElement;
   scrollHeight: number;
+  init: boolean;
 
   constructor(private el: ElementRef) {
-    this.htmlElement = this.el.nativeElement;
-    this.htmlElement.style.overflow = 'hidden';
-    if (!this.ycaSlide) {
-      this.htmlElement.style.height = '0px';
-      this.scrollHeight = 0;
-    } else {
-      this.htmlElement.style.height = 'auto';
-      this.scrollHeight = this.htmlElement.scrollHeight;
-    }
+    setTimeout(() => {
+      this.htmlElement = this.el.nativeElement;
+      this.htmlElement.style.overflow = 'hidden';
+      if (!this.ycaSlide) {
+        this.htmlElement.style.height = '0px';
+        this.scrollHeight = 0;
+      } else {
+        this.htmlElement.style.height = 'auto';
+        this.scrollHeight = this.htmlElement.scrollHeight;
+      }
+      this.init = true;
+    }, this.wait);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ready() {
+    return new Promise(resolve => {
+      const wait = () => {
+        if(this.init) resolve();
+        else setTimeout(() => {
+          wait();
+        }, 100);
+      };
+      wait();
+    });
+  }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    await this.ready();
     if (changes.ycaSlide.currentValue) {
       this.slideDown();
     } else {
